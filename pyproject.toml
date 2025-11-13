@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rally-database"
+description = "Projet de Système de bases de données à Centrale Lyon : création d'une database sur des rallyes."
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "psycopg[binary,pool]>=3.2.9",
+  "faker>=38.0.0",
+]
+
+[project.urls]
+homepage = "https://github.com/cchenu/rally-database"
+documentation = "https://github.com/cchenu/rally-database"
+repository = "https://github.com/cchenu/rally-database"
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+fix = false
+extend-exclude = ["venv"]
+
+[tool.ruff.lint]
+unfixable = []
+select = [
+  "ALL"
+]
+
+ignore = [
+  "PLR0904", # too-many-public-methods
+  "PLR0913", # Too many arguments to function call
+  "PLR0911", # Too many returns
+  "PLR0912", # Too many branches
+  "PLR0914", # Too many locals
+  "PLR0915", # Too many statements
+  "D203", # incorrect-blank-line-before-class
+  "D212", # multi-line-summary-first-line 
+  "COM812", # missing-trailing-coma
+  "FBT001", # boolean-type-hint-positional-argument
+  "FBT002", # boolean-default-value-positional-argument
+  "C901", # complex-structure
+  "CPY001", # missing-copyright-notice
+  "S608", # hardcoded-sql-expression
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+  "S101", # assert
+  "PLR2004", # magic-value-comparison
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "preserve"
+
+[tool.black]
+line-length = 79
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+pretty = true
+ignore_missing_imports = true
+# disallow_any_unimported = true
+# disallow_any_expr = true
+# disallow_any_decorated = true
+# disallow_any_explicit = true
+
+
+[tool.isort]
+profile = "black"
