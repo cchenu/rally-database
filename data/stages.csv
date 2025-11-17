@@ -1,0 +1,291 @@
+year,number,starting_city,ending_city
+1995,1,Grenade,Motril
+1995,2,Nador,Er Rachidia
+1995,3,Er Rachidia,Ouarzazate
+1995,4,Ouarzazate,Goulimine
+1995,5,Goulimine,Smara
+1995,6,Smara,Aousserd
+1995,7,Aousserd,Zouerate
+1995,8,Zouerate,Chinguetti
+1995,9,Chinguetti,Tidjikja
+1995,10,Tidjikja,Aïoun El Atrouss
+1995,11,Aïoun El Atrouss,Bakel
+1995,12,Bakel,Labé
+1995,13,Labé,Tambacounda
+1995,14,Tambacounda,Dakar
+1996,0,Grenade,Grenade
+1996,1,Grenade,Malaga
+1996,2,Nador,Oujda
+1996,3,Oujda,Er Rachidia
+1996,4,Er Rachidia,Fam El Hisn
+1996,5,Fam El Hisn,Smara
+1996,6,Smara,Zouerate
+1996,7,Zouerate,Atar
+1996,8,Atar,Zouerate
+1996,9,Zouerate,El Mreiti
+1996,10,El Mreiti,Tichitt
+1996,11,Tichitt,Kiffa
+1996,12,Kiffa,Kayes
+1996,13,Kayes,Labé
+1996,14,Labé,Tambacounda
+1996,15,Tambacounda,Dakar
+1997,1,Dakar,Tambacounda
+1997,2,Tambacounda,Kayes
+1997,3,Kayes,Nara
+1997,4,Nara,Tombouctou
+1997,5,Tombouctou,Gao
+1997,6,Gao,Ménaka
+1997,7,Ménaka,Tahoua
+1997,8,Tahoua,Agadez
+1997,9,Agadez,Inabaghirit
+1997,10,Inabaghirit,Kidal
+1997,11,Kidal,Tombouctou
+1997,12,Tombouctou,Néma
+1997,13,Néma,Kiffa
+1997,14,Kiffa,Saint-Louis
+1997,15,Saint-Louis,Dakar
+1998,1,Paris,Narbonne
+1998,2,Narbonne,Grenade
+1998,3,Grenade,Almería
+1998,4,Nador,Er Rachidia
+1998,5,Er Rachidia,Ouarzazate
+1998,6,Ouarzazate,Smara
+1998,7,Smara,Zouerate
+1998,8,Zouerate,El Mreiti
+1998,9,El Mreiti,Taoudeni
+1998,10,Taoudeni,Gao
+1998,11,Gao,Tombouctou
+1998,12,Tombouctou,Néma
+1998,13,Néma,Tidjikja
+1998,14,Tidjikja,Atar
+1998,15,Atar,Boutilimit
+1998,16,Boutilimit,Saint-Louis
+1998,17,Saint-Louis,Dakar
+1999,0,Grenade,Grenade
+1999,1,Grenade,Rabat
+1999,2,Rabat,Agadir
+1999,3,Agadir,Tan-Tan
+1999,4,Tan-Tan,Bir Moghrein
+1999,5,Bir Moghrein,Atar
+1999,6,Atar,Tidjikja
+1999,7,Tidjikja,Nioro
+1999,8,Nioro,Bobo Dioulasso
+1999,9,Bobo Dioulasso,Mopti
+1999,10,Mopti,Tombouctou
+1999,11,Tombouctou,Néma
+1999,12,Néma,Tichitt
+1999,13,Tichitt,Atar
+1999,14,Atar,Nouakchott
+1999,15,Nouakchott,Saint-Louis
+1999,16,Saint-Louis,Dakar
+2000,1,Dakar,Tambacounda
+2000,2,Tambacounda,Kayes
+2000,3,Kayes,Bamako
+2000,4,Bamako,Bobo Dioulasso
+2000,5,Bobo Dioulasso,Ouagadougou
+2000,6,Ouagadougou,Niamey
+2000,7,Sabha,Waw Kebir
+2000,8,Waw Kebir,Waha
+2000,9,Waha,Koufra
+2000,10,Koufra,Ad-Dakhla
+2000,11,Ad-Dakhla,Ad-Dakhla
+2000,12,Ad-Dakhla,Wadi Elrayan
+2000,13,Wadi Elrayan,Le Caire
+2001,1,Paris,Narbonne
+2001,2,Narbonne,Castellón de la Plana
+2001,3,Castellón de la Plana,Almería
+2001,4,Nador,Er Rachidia
+2001,5,Er Rachidia,Ouarzazate
+2001,6,Ouarzazate,Goulimine
+2001,7,Goulimine,Smara
+2001,8,Smara,El Ghallaouiya
+2001,9,El Ghallaouiya,El Ghallaouiya
+2001,10,El Ghallaouiya,Atar
+2001,11,Atar,Nouakchott
+2001,12,Nouakchott,Tidjikja
+2001,13,Tidjikja,Tidjikja
+2001,14,Tidjikja,Tichitt
+2001,15,Tichitt,Néma
+2001,16,Néma,Bamako
+2001,17,Bamako,Bakel
+2001,18,Bakel,Tambacounda
+2001,19,Tambacounda,Dakar
+2001,20,Dakar,Dakar
+2002,1,Arras,Châteauroux
+2002,2,Châteauroux,Narbonne
+2002,3,Narbonne,Madrid
+2002,4,Madrid,Rabat
+2002,5,Rabat,Er Rachidia
+2002,6,Er Rachidia,Ouarzazate
+2002,7,Ouarzazate,Tan-Tan
+2002,8,Tan-Tan,Zouerate
+2002,9,Zouerate,Atar
+2002,10,Atar,Atar
+2002,11,Atar,Tidjikja
+2002,12,Tidjikja,Tichitt
+2002,13,Tichitt,Tichitt
+2002,14,Tichitt,Kiffa
+2002,15,Kiffa,Dakar
+2002,16,Dakar,Dakar
+2003,1,Marseille,Narbonne
+2003,2,Narbonne,Castellón de la Plana
+2003,3,Castellón de la Plana,Valence
+2003,4,Tunis,Tozeur
+2003,5,Tozeur,El Borma
+2003,6,El Borma,Galdames
+2003,7,Galdames,Ghat
+2003,8,Ghat,Sebha
+2003,9,Sebha,Zillah
+2003,10,Zillah,Sarir
+2003,11,Sarir,Siwa
+2003,12,Siwa,Siwa
+2003,13,Siwa,Dakhla
+2003,14,Dakhla,Louxor
+2003,15,Louxor,Abu Rish
+2003,16,Abu Rish,Charm el-Cheikh
+2003,17,Charm el-Cheikh,Charm el-Cheikh
+2004,1,Clermont-Ferrand,Narbonne
+2004,2,Narbonne,Castellón de la Plana
+2004,3,Castellón de la Plana,Tanger
+2004,4,Tanger,Er Rachidia
+2004,5,Er Rachidia,Ouarzazate
+2004,6,Ouarzazate,Tan-Tan
+2004,7,Tan-Tan,Atar
+2004,8,Atar,Tidjikja
+2004,9,Tidjikja,Néma
+2004,10,Néma,Mopti
+2004,11,Mopti,Bobo Dioulasso
+2004,12,Bobo Dioulasso,Bamako
+2004,13,Bamako,Aïoun El Atrouss
+2004,14,Aïoun El Atrouss,Tidjikja
+2004,15,Tidjikja,Nouakchott
+2004,16,Nouakchott,Dakar
+2004,17,Dakar,Dakar
+2005,1,Barcelone,Barcelone
+2005,2,Barcelone,Grenade
+2005,3,Grenade,Rabat
+2005,4,Rabat,Agadir
+2005,5,Agadir,Smara
+2005,6,Smara,Zouerate
+2005,7,Zouerate,Tichitt
+2005,8,Tichitt,Tidjikja
+2005,9,Tidjikja,Atar
+2005,10,Atar,Atar
+2005,11,Atar,Kiffa
+2005,12,Kiffa,Bamako
+2005,13,Bamako,Kayes
+2005,14,Kayes,Tambacounda
+2005,15,Tambacounda,Dakar
+2005,16,Dakar,Dakar
+2006,1,Lisbonne,Portimão
+2006,2,Portimão,Malaga
+2006,3,Nador,Er Rachidia
+2006,4,Er Rachidia,Ouarzazate
+2006,5,Ouarzazate,Tan-Tan
+2006,6,Tan-Tan,Zouerate
+2006,7,Zouerate,Atar
+2006,8,Atar,Nouakchott
+2006,9,Nouakchott,Kiffa
+2006,10,Kiffa,Kayes
+2006,11,Kayes,Bamako
+2006,12,Bamako,Labé
+2006,13,Labé,Tambacounda
+2006,14,Tambacounda,Dakar
+2006,15,Dakar,Dakar
+2007,1,Lisbonne,Portimão
+2007,2,Portimão,Malaga
+2007,3,Nador,Er Rachidia
+2007,4,Er Rachidia,Ouarzazate
+2007,5,Ouarzazate,Tan-Tan
+2007,6,Tan-Tan,Zouerate
+2007,7,Zouerate,Atar
+2007,8,Atar,Tichitt
+2007,9,Tichitt,Néma
+2007,10,Néma,Néma
+2007,11,Néma,Aïoun El Atrouss
+2007,12,Aïoun El Atrouss,Kayes
+2007,13,Kayes,Tambacounda
+2007,14,Tambacounda,Dakar
+2007,15,Dakar,Dakar
+2009,1,Buenos Aires,Santa Rosa
+2009,2,Santa Rosa,Puerto Madryn
+2009,3,Puerto Madryn,Ingeniero Jacobacci
+2009,4,Ingeniero Jacobacci,Neuquén
+2009,5,Neuquén,San Rafael
+2009,6,San Rafael,Mendoza
+2009,7,Mendoza,Valparaíso
+2009,8,Valparaíso,La Serena
+2009,9,La Serena,Copiapó
+2009,10,Copiapó,Copiapó
+2009,11,Copiapó,Fiambala
+2009,12,Fiambala,La Rioja
+2009,13,La Rioja,Córdoba
+2009,14,Córdoba,Buenos Aires
+2010,1,Buenos Aires,Córdoba
+2010,2,Córdoba,La Rioja
+2010,3,La Rioja,Fiambala
+2010,4,Fiambala,Copiapó
+2010,5,Copiapó,Antofagasta
+2010,6,Antofagasta,Iquique
+2010,7,Iquique,Antofagasta
+2010,8,Antofagasta,Copiapó
+2010,9,Copiapó,La Serena
+2010,10,La Serena,Santiago du Chili
+2010,11,Santiago du Chili,San Juan
+2010,12,San Juan,San Rafael
+2010,13,San Rafael,Santa Rosa
+2010,14,Santa Rosa,Buenos Aires
+2011,1,Buenos Aires,Córdoba
+2011,2,Córdoba,San Miguel de Tucumán
+2011,3,San Miguel de Tucumán,San Salvador de Jujuy
+2011,4,San Salvador de Jujuy,Calama
+2011,5,Calama,Iquique
+2011,6,Iquique,Arica
+2011,7,Arica,Antofagasta
+2011,8,Antofagasta,Copiapó
+2011,9,Copiapó,Copiapó
+2011,10,Copiapó,Chilecito
+2011,11,Chilecito,San Juan
+2011,12,San Juan,Córdoba
+2011,13,Córdoba,Buenos Aires
+2012,1,Mar del Plata,Santa Rosa de la Pampa
+2012,2,Santa Rosa de la Pampa,San Rafael
+2012,3,San Rafael,San Juan
+2012,4,San Juan,Chilecito
+2012,5,Chilecito,Fiambalá
+2012,6,Fiambalá,Copiapó
+2012,7,Copiapó,Copiapó
+2012,8,Copiapó,Antofagasta
+2012,9,Antofagasta,Iquique
+2012,10,Iquique,Arica
+2012,11,Arica,Arequipa
+2012,12,Arequipa,Nazca
+2012,13,Nazca,Pisco
+2012,14,Pisco,Lima
+2013,1,Lima,Pisco
+2013,2,Pisco,Pisco
+2013,3,Pisco,Nazca
+2013,4,Nazca,Arequipa
+2013,5,Arequipa,Arica
+2013,6,Arica,Calama
+2013,7,Calama,Salta
+2013,8,Salta,San Miguel de Tucumán
+2013,9,San Miguel de Tucumán,Córdoba
+2013,10,Córdoba,La Rioja
+2013,11,La Rioja,Fiambalá
+2013,12,Fiambalá,Copiapó
+2013,13,Copiapó,La Serena
+2013,14,La Serena,Santiago du Chili
+2014,1,Rosario,San Luis
+2014,2,San Luis,San Rafael
+2014,3,San Rafael,San Juan
+2014,4,San Juan,Chilecito
+2014,5,Chilecito,San Miguel de Tucumán
+2014,6,San Miguel de Tucumán,Salta
+2014,7,Salta,Uyuni
+2014,8,Uyuni,Calama
+2014,9,Calama,Iquique
+2014,10,Iquique,Antofagasta
+2014,11,Antofagasta,El Salvador
+2014,12,El Salvador,La Serena
+2014,13,La Serena,Valparaíso

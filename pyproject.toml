@@ -11,6 +11,8 @@ requires-python = ">=3.13"
 dependencies = [
   "psycopg[binary,pool]>=3.2.9",
   "faker>=38.0.0",
+  "pandas>=2.3.3",
+  "geopy>=2.4.1",
 ]
 
 [project.urls]
@@ -20,7 +22,7 @@ repository = "https://github.com/cchenu/rally-database"
 
 [tool.ruff]
 line-length = 79
-target-version = "py312"
+target-version = "py313"
 fix = false
 extend-exclude = ["venv"]
 
@@ -31,6 +33,7 @@ select = [
 ]
 
 ignore = [
+  "S311", # suspicious-non-cryptographic-random-usage
   "PLR0904", # too-many-public-methods
   "PLR0913", # Too many arguments to function call
   "PLR0911", # Too many returns
@@ -62,10 +65,10 @@ quote-style = "preserve"
 
 [tool.black]
 line-length = 79
-target-version = ["py312"]
+target-version = ["py313"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 pretty = true
 ignore_missing_imports = true

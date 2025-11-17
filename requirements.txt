@@ -6,15 +6,26 @@
 #
 faker==38.0.0
     # via rally-database (pyproject.toml)
+numpy==2.3.5
+    # via pandas
+pandas==2.3.3
+    # via rally-database (pyproject.toml)
 psycopg[binary,pool]==3.2.12
     # via rally-database (pyproject.toml)
 psycopg-binary==3.2.12
     # via psycopg
 psycopg-pool==3.2.7
     # via psycopg
+python-dateutil==2.9.0.post0
+    # via pandas
+pytz==2025.2
+    # via pandas
+six==1.17.0
+    # via python-dateutil
 typing-extensions==4.15.0
     # via psycopg-pool
 tzdata==2025.2
     # via
     #   faker
+    #   pandas
     #   psycopg

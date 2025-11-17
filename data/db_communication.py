@@ -255,8 +255,9 @@ class PostgreSQL(SQLInterface):
         parameters: list[Any] = []
         if condition_data:
             query += " WHERE"
-            condition_columns, parameters = list(condition_data.keys()), list(
-                condition_data.values()
+            condition_columns, parameters = (
+                list(condition_data.keys()),
+                list(condition_data.values()),
             )
 
             query += " AND ".join(
@@ -277,7 +278,7 @@ class PostgreSQL(SQLInterface):
                 return [row[0] for row in data]
             return data
 
-        columns_list = [desc[0] for desc in self.cursor.description]
+        columns_list = [desc[0] for desc in self.cursor.description or []]
 
         if return_type == "list[dict]":
             data_list: list[dict[str, Any]] = []
