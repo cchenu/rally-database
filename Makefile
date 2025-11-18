@@ -64,6 +64,17 @@ test:
 requirements:
 	pip-compile --all-extras pyproject.toml
 
+# Database
+DB_URL = postgresql://guest:project-database@ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech/rally-database?sslmode=require
+
+.PHONY: connect
+
+connect:
+	@echo "Try to connect to the database..."
+	@python -c "from data.fill_db import DATABASE; import sys; (lambda: \
+	(DATABASE.read('rally', 'id', number_values=1), print('Success')) )() \
+	or sys.exit(1)"
+
 help:
 	@echo "Usage: make <target>"
 	@echo "Available targets :"

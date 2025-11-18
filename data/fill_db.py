@@ -7,13 +7,20 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from db_communication import PostgreSQL
 from faker import Faker
 from geopy.exc import GeocoderTimedOut
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
-DATABASE = PostgreSQL("localhost", "rally", "postgres", "postgres", 5432)
+from data.db_communication import PostgreSQL
+
+DATABASE = PostgreSQL(
+    hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
+    db_name="neondb",
+    username="guest",
+    password="project-rally",
+    port=5432,
+)
 FAKE = Faker("fr_FR")
 
 
