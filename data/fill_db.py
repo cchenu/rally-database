@@ -1,16 +1,20 @@
 """Script to fill our database with fake data."""
 
 import random
+import string
 import time
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from db_communication import PostgreSQL
+from faker import Faker
 from geopy.exc import GeocoderTimedOut
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
 DATABASE = PostgreSQL("localhost", "rally", "postgres", "postgres", 5432)
+FAKE = Faker("fr_FR")
 
 
 def fill_rally(database: PostgreSQL) -> None:
@@ -146,6 +150,206 @@ def fill_stage(database: PostgreSQL) -> None:
     database.write("stage", [row[1].to_dict() for row in df_stages.iterrows()])
 
 
+def fill_team(database: PostgreSQL) -> None:
+    """
+    Fill team table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    types = ["car", "truck", "motorbike"]
+
+    list_teams = [FAKE.company() for _ in range(50)]
+    list_dicts: list[dict[str, Any]] = [
+        {"name": team, "type": type_}
+        for team in list_teams
+        for type_ in random.sample(types, k=random.randint(1, 3))
+    ]
+
+    for dict_row in list_dicts:
+        dict_row["budget"] = round(random.uniform(100_000, 10_000_000), 2)
+        dict_row["official"] = bool(random.randint(0, 1))
+
+    database.write("team", list_dicts)
+
+
+def fill_team_sponsor(database: PostgreSQL) -> None:
+    """
+    Fill team_sponsor table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    team_ids = database.read("team", "id", return_type="list")
+
+    list_dicts: list[dict[str, Any]] = []
+
+    for team_id in team_ids:
+        list_dicts.extend(
+            [
+                {"id_team": team_id, "name": FAKE.company()}
+                for _ in range(random.randint(0, 6))
+            ]
+        )
+
+    database.write("team_sponsor", list_dicts)
+
+
+def fill_crew(database: PostgreSQL) -> None:
+    """
+    Fill crew table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    team_ids = database.read("team", "id", return_type="list")
+
+    list_dicts: list[dict[str, Any]] = []
+
+    for i, team_id in enumerate(team_ids):
+        list_dicts.append({"id_team": team_id, "number": i + 1})
+
+    database.write("crew", list_dicts)
+
+
+def fill_contestant(database: PostgreSQL) -> None:
+    """
+    Fill contestant table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    crew_ids = database.read("crew", "id", return_type="list")
+
+    list_dicts: list[dict[str, Any]] = []
+
+    list_citizenships = [
+        ("Sud Africain", "en_US"),
+        ("Argentin", "es_AR"),
+        ("Belge", "fr_BE"),
+        ("Brésilien", "pt_BR"),
+        ("Esapgnol", "es_ES"),
+        ("Estonien", "et_EE"),
+        ("Américain", "en_US"),
+        ("Français", "fr_FR"),
+        ("Italien", "it_IT"),
+        ("Lituanien", "lt_LT"),
+        ("Néerlandais", "nl_NL"),
+        ("Polonais", "pl_PL"),
+        ("Suédois", "sv_SE"),
+        ("Suisse", "fr_CH"),
+        ("Tchèque", "cs_CZ"),
+    ]
+
+    for crew_id in crew_ids:
+
+        participation_number = random.randint(1, 10)
+
+        for _ in range(2):
+            citizenship, local = random.choice(list_citizenships)
+
+            fake_local = Faker(local)
+
+            list_dicts.append(
+                {
+                    "last_name": fake_local.last_name(),
+                    "first_name": fake_local.first_name(),
+                    "address": fake_local.address(),
+                    "citizenship": citizenship,
+                    "participation_number": participation_number,
+                    "id_crew": crew_id,
+                }
+            )
+
+    database.write("contestant", list_dicts)
+
+
+def fill_vehicle(database: PostgreSQL) -> None:
+    """
+    Fill vehicle table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    crew_ids = database.read("crew", "id", return_type="list")
+
+    list_dicts: list[dict[str, Any]] = []
+
+    constructors = [
+        "Peugeot",
+        "Citroën",
+        "Renault",
+        "Audi",
+        "Volkswagen",
+        "MINI",
+        "Mitsubishi",
+        "Toyota",
+        "Nissan",
+        "Ford",
+        "KTM",
+        "Honda",
+        "Yamaha",
+        "Suzuki",
+        "Husqvarna",
+        "GasGas",
+        "Kamaz",
+        "Tatra",
+        "Iveco",
+        "Mercedes-Benz",
+    ]
+    engine_sizes = [125, 250, 450, 690, 800, 1000, 3000, 3500]
+
+    for i, crew_id in enumerate(crew_ids):
+
+        list_dicts.append(
+            {
+                "number": i + 1,
+                "constructor": random.choice(constructors),
+                "engine_size": random.choice(engine_sizes),
+                "serie_number": FAKE.bothify(
+                    "??##-####-????", letters=string.ascii_uppercase
+                ),
+                "id_crew": crew_id,
+            }
+        )
+
+    database.write("vehicle", list_dicts)
+
+
+def fill_supplier(database: PostgreSQL) -> None:
+    """
+    Fill supplier table and rally_sponsor table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    rally_ids = database.read("rally", "id", return_type="list")
+
+    for table in ("supplier", "rally_sponsor"):
+        list_dicts: list[dict[str, Any]] = []
+
+        for rally_id in rally_ids:
+            list_dicts.extend(
+                [
+                    {"id_rally": rally_id, "name": FAKE.company()}
+                    for _ in range(random.randint(0, 6))
+                ]
+            )
+
+        database.write(table, list_dicts)
+
+
 if __name__ == "__main__":
-    fill_rally(DATABASE)
-    fill_stage(DATABASE)
+    fill_supplier(DATABASE)
