@@ -7,12 +7,11 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+from db_communication import PostgreSQL
 from faker import Faker
 from geopy.exc import GeocoderTimedOut
 from geopy.geocoders import Nominatim
 from geopy.location import Location
-
-from data.db_communication import PostgreSQL
 
 DATABASE = PostgreSQL(
     hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
@@ -257,7 +256,6 @@ def fill_contestant(database: PostgreSQL) -> None:
     ]
 
     for crew_id in crew_ids:
-
         participation_number = random.randint(1, 10)
 
         for _ in range(2):
@@ -317,7 +315,6 @@ def fill_vehicle(database: PostgreSQL) -> None:
     engine_sizes = [125, 250, 450, 690, 800, 1000, 3000, 3500]
 
     for i, crew_id in enumerate(crew_ids):
-
         list_dicts.append(
             {
                 "number": i + 1,
@@ -358,5 +355,38 @@ def fill_supplier(database: PostgreSQL) -> None:
         database.write(table, list_dicts)
 
 
+def fill_participation(database: PostgreSQL) -> None:
+    """
+    Fill participation table and rally_sponsor table of `database`.
+
+    Parameters
+    ----------
+    database : PostgreSQL
+        Database to be filled.
+    """
+    query = (
+        "SELECT DISTINCT team.id, contestant.participation_number FROM team "
+        "JOIN crew ON team.id = crew.id_team "
+        "JOIN contestant ON crew.id = contestant.id_crew;"
+    )
+    # Each tuple is (team_id, participation_number)
+    list_teams: list[tuple[int, int]] = database.execute(query)
+
+    list_rally_ids = database.read("rally", "id", return_type="list")
+
+    list_dicts: list[dict[str, Any]] = []
+
+    for team_id, participation_number in list_teams:
+        team_rally_ids = random.sample(list_rally_ids, k=participation_number)
+        list_dicts.extend(
+            [
+                {"id_rally": rally_id, "id_team": team_id}
+                for rally_id in team_rally_ids
+            ]
+        )
+
+    database.write("participation", list_dicts)
+
+
 if __name__ == "__main__":
-    fill_supplier(DATABASE)
+    fill_participation(DATABASE)
