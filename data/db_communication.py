@@ -225,6 +225,7 @@ class PostgreSQL(SQLInterface):
     def execute(  # noqa: D102
         self, query: str, params: list[Any] | None = None
     ) -> list[Any]:
+        
         try:
             self.cursor.execute(query, params)
             if query.lower().startswith("select"):
@@ -312,8 +313,8 @@ class PostgreSQL(SQLInterface):
         columns_str = ", ".join(columns)
         query_empty += f" ({columns_str})"
 
-        # We add max 100 000 items by request
-        max_insert = 100000
+        # We add max 10 000 items by request
+        max_insert = 10000
         for idx in range(0, len(data), max_insert):
             data_request = data[idx : idx + max_insert]
 
@@ -375,3 +376,4 @@ class PostgreSQL(SQLInterface):
     def __del__(self) -> None:  # noqa: D105
         if hasattr(self, "conn"):
             self.conn.close()
+
