@@ -13,14 +13,14 @@ install:
 	# pip 25.3 does not work with pip-compile
 	python.exe -m $(PIP) install pip==25.2
 	$(PIP) install -r requirements.txt
-	$(PIP) install ruff black isort mypy pytest pip-tools
+	$(PIP) install ruff black isort mypy pytest pip-tools ipykernel
 	$(MYPY) --install-types
 
 lint:
 	$(RUFF) check --preview .
 
 ruff-check:
-	$(RUFF) format --check .
+	$(RUFF) format --check --diff .
 
 black-check:
 	$(BLACK) --check --diff .
@@ -35,7 +35,7 @@ check:
 	-@echo "=== Ruff lint ==="
 	-@$(RUFF) check --preview .
 	-@echo "=== Ruff format (dry run) ==="
-	-@$(RUFF) format --check .
+	-@$(RUFF) format --check --diff .
 	-@echo "=== Black (dry run) ==="
 	-@$(BLACK) --check --diff .
 	-@echo "=== isort (dry run) ==="
@@ -91,4 +91,5 @@ help:
 	@echo "  format         All formatting (ruff + black + isort)"
 	@echo "  test           Run all tests"
 	@echo "  requirements   Compile requirements"
+	@echo "  connect        Try database connection"
 	@echo "  help           Show this help"

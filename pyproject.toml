@@ -33,7 +33,9 @@ select = [
 ]
 
 ignore = [
+  "S106", # hardcoded-password-func-arg
   "S311", # suspicious-non-cryptographic-random-usage
+  "S608", # hardcoded-sql-expression
   "PLR0904", # too-many-public-methods
   "PLR0913", # Too many arguments to function call
   "PLR0911", # Too many returns
@@ -47,7 +49,6 @@ ignore = [
   "FBT002", # boolean-default-value-positional-argument
   "C901", # complex-structure
   "CPY001", # missing-copyright-notice
-  "S608", # hardcoded-sql-expression
 ]
 
 [tool.ruff.lint.per-file-ignores]

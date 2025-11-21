@@ -1,5 +1,6 @@
 """Script to fill our database with fake data."""
 
+import operator
 import random
 import string
 import time
@@ -9,12 +10,15 @@ from typing import Any
 import pandas as pd
 from db_communication import PostgreSQL
 from faker import Faker
-from geopy.exc import GeocoderTimedOut
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
+<<<<<<< HEAD
 from data.db_communication import PostgreSQL
 
+=======
+>>>>>>> f1cf7ef1dbc9dceb221e6422657157affe92d3cf
 DATABASE = PostgreSQL(
     hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
     db_name="neondb",
@@ -84,6 +88,8 @@ def get_location(geolocator: Nominatim, city_name: str) -> Location:
         try:
             return geolocator.geocode(city_name, language="fr")
         except GeocoderTimedOut:
+            time.sleep(1)
+        except GeocoderUnavailable:
             time.sleep(1)
 
 
@@ -359,53 +365,65 @@ def fill_supplier(database: PostgreSQL) -> None:
 
 def fill_result(database: PostgreSQL) -> None:
     """
-    Fill result table of `database`
+    Fill result table of `database`.
 
-    Parameters 
+    Parameters
     ----------
     database : PostgreSQL
-        Database to be filled
+        Database to be filled.
     """
-    stages = database.read("stage", ["id", "id_rally", "type", "max_time", "number", "kilometers"])
+    stages = database.read(
+        "stage", ["id", "id_rally", "type", "max_time", "number", "kilometers"]
+    )
     crews = database.read("crew", ["id", "id_team"])
     participations = database.read("participation", ["id_rally", "id_team"])
 
     list_dicts: list[dict[str, Any]] = []
 
     for crew in crews:
+        rally_of_the_crew = [
+            p["id_rally"]
+            for p in participations
+            if p["id_team"] == crew["id_team"]
+        ]
 
-        rally_of_the_crew = [p["id_rally"] for p in participations if p["id_team"] == crew["id_team"]]
-        
         for rally in rally_of_the_crew:
-            
-            stage_of_the_rally_of_the_crew = sorted([s for s in stages if s["id_rally"] == rally], key = lambda s : s["number"])
-            
-            for stage in stage_of_the_rally_of_the_crew:
+            stage_of_the_rally_of_the_crew = sorted(
+                [s for s in stages if s["id_rally"] == rally],
+                key=operator.itemgetter("number"),
+            )
 
+            for stage in stage_of_the_rally_of_the_crew:
                 time = 0
                 disqualification = False
 
                 if stage["type"] == "special":
-                    time = random.randint(int(0.8 * stage["max_time"]), int(1.02 * stage["max_time"]))
-                
+                    time = random.randint(
+                        int(0.8 * stage["max_time"]),
+                        int(1.02 * stage["max_time"]),
+                    )
+
                     if time > stage["max_time"]:
                         disqualification = True
 
                 else:
-                    vitesse = 0.028 # km/s
-                    time = random.randint(int(0.8 * stage["kilometers"] / vitesse), int(1.2 * stage["kilometers"] / vitesse))
+                    vitesse = 0.028  # km/s
+                    time = random.randint(
+                        int(0.8 * stage["kilometers"] / vitesse),
+                        int(1.2 * stage["kilometers"] / vitesse),
+                    )
 
-                # Crash probability
-                if random.random() < 0.02:
+                crash_probability = 0.02
+                if random.random() < crash_probability:
                     disqualification = True
                     time = 0
-                    
+
                 list_dicts.append(
                     {
                         "id_stage": stage["id"],
                         "id_crew": crew["id"],
                         "time": time,
-                        "disqualification": disqualification
+                        "disqualification": disqualification,
                     }
                 )
                 if disqualification:
@@ -414,8 +432,11 @@ def fill_result(database: PostgreSQL) -> None:
     database.write("result", list_dicts)
 
 
-
 if __name__ == "__main__":
+<<<<<<< HEAD
     #fill_result(DATABASE)
     print(DATABASE.read("result"))
     
+=======
+    DATABASE.read("result")
+>>>>>>> f1cf7ef1dbc9dceb221e6422657157affe92d3cf
