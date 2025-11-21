@@ -6,6 +6,10 @@
 #
 faker==38.0.0
     # via rally-database (pyproject.toml)
+geographiclib==2.1
+    # via geopy
+geopy==2.4.1
+    # via rally-database (pyproject.toml)
 numpy==2.3.5
     # via pandas
 pandas==2.3.3

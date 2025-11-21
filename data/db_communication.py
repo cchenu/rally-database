@@ -225,7 +225,6 @@ class PostgreSQL(SQLInterface):
     def execute(  # noqa: D102
         self, query: str, params: list[Any] | None = None
     ) -> list[Any]:
-        
         try:
             self.cursor.execute(query, params)
             if query.lower().startswith("select"):
@@ -376,4 +375,3 @@ class PostgreSQL(SQLInterface):
     def __del__(self) -> None:  # noqa: D105
         if hasattr(self, "conn"):
             self.conn.close()
-
