@@ -14,11 +14,6 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
-<<<<<<< HEAD
-from data.db_communication import PostgreSQL
-
-=======
->>>>>>> f1cf7ef1dbc9dceb221e6422657157affe92d3cf
 DATABASE = PostgreSQL(
     hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
     db_name="neondb",
@@ -433,10 +428,4 @@ def fill_result(database: PostgreSQL) -> None:
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    #fill_result(DATABASE)
-    print(DATABASE.read("result"))
-    
-=======
     DATABASE.read("result")
->>>>>>> f1cf7ef1dbc9dceb221e6422657157affe92d3cf
