@@ -357,5 +357,65 @@ def fill_supplier(database: PostgreSQL) -> None:
         database.write(table, list_dicts)
 
 
+def fill_result(database: PostgreSQL) -> None:
+    """
+    Fill result table of `database`
+
+    Parameters 
+    ----------
+    database : PostgreSQL
+        Database to be filled
+    """
+    stages = database.read("stage", ["id", "id_rally", "type", "max_time", "number", "kilometers"])
+    crews = database.read("crew", ["id", "id_team"])
+    participations = database.read("participation", ["id_rally", "id_team"])
+
+    list_dicts: list[dict[str, Any]] = []
+
+    for crew in crews:
+
+        rally_of_the_crew = [p["id_rally"] for p in participations if p["id_team"] == crew["id_team"]]
+        
+        for rally in rally_of_the_crew:
+            
+            stage_of_the_rally_of_the_crew = sorted([s for s in stages if s["id_rally"] == rally], key = lambda s : s["number"])
+            
+            for stage in stage_of_the_rally_of_the_crew:
+
+                time = 0
+                disqualification = False
+
+                if stage["type"] == "special":
+                    time = random.randint(int(0.8 * stage["max_time"]), int(1.02 * stage["max_time"]))
+                
+                    if time > stage["max_time"]:
+                        disqualification = True
+
+                else:
+                    vitesse = 0.028 # km/s
+                    time = random.randint(int(0.8 * stage["kilometers"] / vitesse), int(1.2 * stage["kilometers"] / vitesse))
+
+                # Crash probability
+                if random.random() < 0.02:
+                    disqualification = True
+                    time = 0
+                    
+                list_dicts.append(
+                    {
+                        "id_stage": stage["id"],
+                        "id_crew": crew["id"],
+                        "time": time,
+                        "disqualification": disqualification
+                    }
+                )
+                if disqualification:
+                    break
+
+    database.write("result", list_dicts)
+
+
+
 if __name__ == "__main__":
-    fill_supplier(DATABASE)
+    #fill_result(DATABASE)
+    print(DATABASE.read("result"))
+    
