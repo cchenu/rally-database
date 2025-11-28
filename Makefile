@@ -1,5 +1,6 @@
 .PHONY: install lint ruff-check black-check isort-check type-check check \
-        ruff-format black-format isort-format format test requirements help
+        ruff-format black-format isort-format format test requirements help \
+		connect run
 
 PIP=pip
 RUFF=ruff
@@ -8,6 +9,7 @@ ISORT=isort
 MYPY=mypy
 PYTEST=pytest
 MAKE = make
+STREAMLIT = streamlit
 
 install:
 	# pip 25.3 does not work with pip-compile
@@ -67,13 +69,14 @@ requirements:
 # Database
 DB_URL = postgresql://guest:project-database@ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech/rally-database?sslmode=require
 
-.PHONY: connect
-
 connect:
 	@echo "Try to connect to the database..."
 	@python -c "from data.fill_db import DATABASE; import sys; (lambda: \
 	(DATABASE.read('rally', 'id', number_values=1), print('Success')) )() \
 	or sys.exit(1)"
+
+run:
+	$(STREAMLIT) run app/app.py
 
 help:
 	@echo "Usage: make <target>"
@@ -92,4 +95,5 @@ help:
 	@echo "  test           Run all tests"
 	@echo "  requirements   Compile requirements"
 	@echo "  connect        Try database connection"
+	@echo "  run        	Run the streamlit app"
 	@echo "  help           Show this help"
