@@ -254,7 +254,7 @@ class PostgreSQL(SQLInterface):
 
         parameters: list[Any] = []
         if condition_data:
-            query += " WHERE"
+            query += " WHERE "
             condition_columns, parameters = (
                 list(condition_data.keys()),
                 list(condition_data.values()),
