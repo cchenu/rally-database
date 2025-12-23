@@ -3,22 +3,11 @@
 import pandas as pd
 import streamlit as st
 
-from data.db_communication import PostgreSQL
+from app.utils import DATABASE
 
-DATABASE = PostgreSQL(                                  
-    hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
-    db_name="neondb",
-    username="guest",
-    password="project-rally",
-    port=5432,
-)
 
-def create_page():
-    st.title("Requêtes")
-    st.divider()
-        
-
-def question_1():
+def question_1() -> None:
+    """Create the first section part."""
     list_question1 = DATABASE.execute(
         "SELECT last_name, first_name, citizenship FROM contestant "
         "JOIN crew ON contestant.id_crew = crew.id "
@@ -58,7 +47,8 @@ def question_1():
         st.dataframe(df_question1, width="stretch")
 
 
-def question_2():
+def question_2() -> None:
+    """Create the second section part."""
     nombre_etape_senegal = DATABASE.execute(
         "SELECT COUNT(*) AS nb_lignes FROM stage "
         "JOIN city c1 ON stage.id_starting_city = c1.id "
@@ -93,7 +83,8 @@ def question_2():
     st.divider()
 
 
-def question_3():
+def question_3() -> None:
+    """Create the third section part."""
     list_question3 = DATABASE.execute(
         "SELECT number, c1.name, c2.name FROM stage "
         "JOIN city c1 ON stage.id_starting_city = c1.id "
@@ -109,8 +100,8 @@ def question_3():
         ],
     )
     st.header(
-    "3) Lister la liste d'étapes (numéro, ville départ et ville d'arrivée) "
-    "se déroulant au Sénégal."
+        "3) Lister la liste d'étapes (numéro, ville départ et ville "
+        "d'arrivée) se déroulant au Sénégal."
     )
     st.divider()
     st.write("")
@@ -132,7 +123,8 @@ def question_3():
     st.divider()
 
 
-def question_4():
+def question_4() -> None:
+    """Create the fourth section part."""
     list_question4 = DATABASE.execute(
         "SELECT r.name, r.year FROM rally r "
         "WHERE (SELECT COUNT(*) FROM participation p "
@@ -149,9 +141,9 @@ def question_4():
         list_question4, columns=["Name of the rally", "Year of the rally"]
     )
     st.header(
-    " Faux : 4) Trouver la liste des rallyes ayant un nombre de participants "
-    "égal ou supérieur au nombre de participants du rallye Paris-Dakar de "
-    "l'année 2002."
+        " Faux : 4) Trouver la liste des rallyes ayant un nombre de "
+        "participants égal ou supérieur au nombre de participants du rallye "
+        "Paris-Dakar de l'année 2002."
     )
     st.divider()
     st.write("")
@@ -185,7 +177,8 @@ def question_4():
     st.divider()
 
 
-def question_5():
+def question_5() -> None:
+    """Create the fifth section part."""
     nombre_vehicule_toyota = DATABASE.execute(
         "SELECT COUNT(*) AS nb_vehicles FROM vehicle v "
         "JOIN crew c ON v.id_crew = c.id "
@@ -196,9 +189,9 @@ def question_5():
         "AND v.constructor = 'Toyota';"
     )
     st.header(
-    "5) Lister le nombre de véhicules appartenant à la marque Toyota ayant "
-    "participé au rallye Paris-Dakar pour les dix dernières années "
-    "(depuis 2004)."
+        "5) Lister le nombre de véhicules appartenant à la marque Toyota "
+        "ayant participé au rallye Paris-Dakar pour les dix dernières années "
+        "(depuis 2004)."
     )
     st.divider()
     st.write("")
@@ -229,7 +222,8 @@ def question_5():
     st.divider()
 
 
-def question_6():
+def question_6() -> None:
+    """Create the sixth section part."""
     list_question6 = DATABASE.execute(
         "SELECT id_crew, time, disqualification, number FROM result re "
         "JOIN stage s ON re.id_stage = s.id "
@@ -261,8 +255,8 @@ def question_6():
         )
     )
     st.header(
-    "6) Lister le classement des équipages par étape pour le Paris-Dakar de "
-    "l'an 2002."
+        "6) Lister le classement des équipages par étape pour le Paris-Dakar "
+        "de l'an 2002."
     )
     st.divider()
     st.write("")
@@ -284,7 +278,8 @@ def question_6():
     st.divider()
 
 
-def question_7():
+def question_7() -> None:
+    """Create the seventh section part."""
     list_question7 = DATABASE.execute(
         "SELECT last_name, first_name, citizenship, participation_number "
         "FROM contestant"
@@ -298,7 +293,7 @@ def question_7():
             "Number of participation",
         ],
     )
-        
+
     st.header(
         "7) Donner le nombre de participation au rallye Paris-Dakar par "
         "concurrent."
@@ -321,8 +316,10 @@ def question_7():
     st.divider()
 
 
-if __name__ == "__main__":
-    create_page()
+def create_page() -> None:
+    """Create the exercise page with all questions."""
+    st.title("Requêtes")
+    st.divider()
     question_1()
     question_2()
     question_3()
@@ -332,3 +329,5 @@ if __name__ == "__main__":
     question_7()
 
 
+if __name__ == "__main__":
+    create_page()

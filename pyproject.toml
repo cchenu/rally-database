@@ -72,7 +72,7 @@ target-version = ["py313"]
 
 [tool.mypy]
 python_version = "3.13"
-strict = false
+strict = true
 pretty = true
 ignore_missing_imports = true
 # disallow_any_unimported = true

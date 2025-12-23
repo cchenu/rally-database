@@ -9,33 +9,33 @@ def create_app() -> None:
     """Create the streamlit app."""
     home_page = st.Page(
         APP_SRC / "home.py",
-        title="Rally application",
+        title="Page d'accueil",
         icon=":material/home:",
     )
     exercise_page = st.Page(
         APP_SRC / "exercise.py",
-        title="Exercise",
+        title="Exercices",
         icon=":material/assignment:",
     )
     rally_page = st.Page(
         APP_SRC / "rally.py",
-        title="Rally",
+        title="Page rally",
         icon=":material/directions_car:",
     )
     stage_page = st.Page(
-        APP_SRC / "stage.py", title="Stage", icon=":material/map:"
+        APP_SRC / "stage.py", title="Page étape", icon=":material/map:"
     )
     team_page = st.Page(
-        APP_SRC / "team.py", title="Team", icon=":material/person:"
+        APP_SRC / "team.py", title="Page équipe", icon=":material/person:"
     )
 
     st.set_page_config(layout="wide")
 
     pg = st.navigation(
         {
-            "Hub": [home_page],
-            "Assignment": [exercise_page],
-            "Reports": [rally_page, stage_page, team_page],
+            "Home": [home_page],
+            "Tâches": [exercise_page],
+            "Détails": [rally_page, stage_page, team_page],
         }
     )
 
