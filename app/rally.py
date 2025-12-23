@@ -144,7 +144,7 @@ def create_table_leaderboard(
 
     if st_table:
         st.session_state["id_team"] = next(
-            [line[-2] for line in leaderboard if line[0] == st_table]
+            line[-2] for line in leaderboard if line[0] == st_table
         )
         st.switch_page(APP_SRC / "team.py")
 
@@ -196,6 +196,32 @@ def create_table_stages(list_stages: list[dict[str, Any]]) -> None:
             df_stages["Étape"] == st_table
         ]["id"].iloc[0]
         st.switch_page(APP_SRC / "stage.py")
+
+
+def create_section_partners(id_rally: int) -> None:
+    """
+    Create the section with the partner of a given rally.
+
+    Parameters
+    ----------
+    id_rally : int
+        ID of the rally in the database.
+    """
+    sponsors = DATABASE.read(
+        "rally_sponsor", "name", {"id_rally": id_rally}, return_type="list"
+    )
+    suppliers = DATABASE.read(
+        "supplier", "name", {"id_rally": id_rally}, return_type="list"
+    )
+
+    if sponsors or suppliers:
+        st.subheader("Partenaires")
+
+        if sponsors:
+            st.markdown("**Sponsors :**\n- " + "\n- ".join(sponsors))
+
+        if suppliers:
+            st.markdown("**Fournisseurs :**\n- " + "\n- ".join(suppliers))
 
 
 def create_page() -> None:
@@ -265,6 +291,8 @@ def create_page() -> None:
     create_table_leaderboard(leaderboard_motorbike, "moto")
 
     create_table_stages(list_stages)
+
+    create_section_partners(id_rally)
 
 
 if __name__ == "__main__":
