@@ -22,6 +22,8 @@ click==8.3.1
     # via streamlit
 colorama==0.4.6
     # via click
+dataframe-with-buttons==1.0.0
+    # via rally-database (pyproject.toml)
 faker==38.0.0
     # via rally-database (pyproject.toml)
 geographiclib==2.1
@@ -57,6 +59,7 @@ packaging==25.0
     #   streamlit
 pandas==2.3.3
     # via
+    #   dataframe-with-buttons
     #   rally-database (pyproject.toml)
     #   streamlit
 pillow==12.0.0
@@ -92,7 +95,9 @@ six==1.17.0
 smmap==5.0.2
     # via gitdb
 streamlit==1.51.0
-    # via rally-database (pyproject.toml)
+    # via
+    #   dataframe-with-buttons
+    #   rally-database (pyproject.toml)
 tenacity==9.1.2
     # via streamlit
 toml==0.10.2

@@ -76,7 +76,7 @@ connect:
 	or sys.exit(1)"
 
 run:
-	$(STREAMLIT) run app/app.py
+	$(STREAMLIT) run streamlit_app.py
 
 help:
 	@echo "Usage: make <target>"

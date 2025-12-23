@@ -2,4 +2,4 @@
 
 import streamlit as st
 
-st.title("Contestant_Page")
+st.title(f"Team_Page: {st.session_state['id_team']}")
