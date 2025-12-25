@@ -14,7 +14,8 @@ dependencies = [
   "pandas>=2.3.3",
   "geopy>=2.4.1",
   "streamlit>=1.51.0",
-  "dataframe-with-buttons>=1.0.0"
+  "dataframe-with-buttons>=1.0.0",
+  "sqlparse>=0.5.5"
 ]
 
 [project.urls]
