@@ -43,7 +43,7 @@ def create_app() -> None:
         st.session_state["id_rally"] = 580
 
     if "id_team" not in st.session_state:
-        st.session_state["id_team"] = 419
+        st.session_state["id_team"] = 42
 
     if "id_stage" not in st.session_state:
         st.session_state["id_stage"] = 326

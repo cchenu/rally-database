@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 from dataframe_with_button import static_dataframe
 
-from app.utils import APP_SRC, DATABASE, convert_s_to_h
+from app.utils import APP_SRC, DATABASE, convert_s_to_h, get_leaderboard
 
 
 def get_city(id_city: int) -> tuple[str, str]:
@@ -56,44 +56,6 @@ def get_team_numbers(
         "WHERE id_rally = %s AND team.type = %s;",
         [id_rally, vehicle],
     )[0][0]
-
-
-def get_leaderboard(
-    id_rally: int, vehicle: Literal["car", "truck", "motorbike"]
-) -> list[tuple[str, float, str, str, str, str, int, bool]]:
-    """
-    Get the leaderboard of a rally for a given category.
-
-    Parameters
-    ----------
-    id_rally : int
-        ID of the rally in the database.
-    vehicle : Literal["car", "truck", "motorbike"]
-        Type of vehicle.
-
-    Returns
-    -------
-    list[tuple[str, float, str, str, str, str, int, bool]]
-        Leaderboard with team name, time, first_name of contestant 1, last
-        name, first_name of contestant 2, last name, team ID and
-        disqualification status.
-    """
-    return DATABASE.execute(
-        "SELECT team.name, SUM(result.time) AS total_time, c1.first_name, "
-        "c1.last_name, c2.first_name, c2.last_name, team.id, "
-        "BOOL_OR(result.disqualification) as disquali "
-        "FROM crew "
-        "JOIN result ON result.id_crew = crew.id "
-        "JOIN stage ON stage.id = result.id_stage "
-        "JOIN team ON team.id = crew.id_team "
-        "JOIN contestant c1 ON c1.id_crew = crew.id "
-        "JOIN contestant c2 ON c2.id_crew = crew.id AND c2.id > c1.id "
-        "WHERE stage.id_rally = %s AND team.type = %s "
-        "GROUP BY team.name, c1.first_name, c1.last_name, c2.first_name, "
-        "c2.last_name, team.id "
-        "ORDER BY disquali ASC, total_time ASC;",
-        [id_rally, vehicle],
-    )
 
 
 def create_table_leaderboard(
