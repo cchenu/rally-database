@@ -17,6 +17,12 @@ DATABASE = PostgreSQL(
 
 APP_SRC = Path(__file__).parent
 
+TRAD_VEHICLE: dict[str, str] = {
+    "car": "voiture",
+    "motorbike": "moto",
+    "truck": "camion",
+}
+
 
 def get_leaderboard(
     id_rally: int, vehicle: Literal["car", "truck", "motorbike"]

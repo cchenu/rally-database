@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 from dataframe_with_button import static_dataframe
 
-from app.utils import APP_SRC, DATABASE, get_leaderboard
+from app.utils import APP_SRC, DATABASE, TRAD_VEHICLE, get_leaderboard
 
 
 def create_section_member(member: dict[str, Any]) -> None:
@@ -137,12 +137,6 @@ def create_page() -> None:
     """Create the Streamlit page about a team."""
     id_team: int = st.session_state["id_team"]
 
-    trad_vehicle: dict[str, str] = {
-        "car": "voiture",
-        "motorbike": "moto",
-        "truck": "camion",
-    }
-
     team_tuple: tuple[str, float, str, int, str, float, str] = (
         DATABASE.execute(
             "SELECT team.name, team.budget, team.type, crew.id, "
@@ -186,7 +180,7 @@ def create_page() -> None:
 
     st.write(
         f"{team_info['name']} est une équipe de catégorie "
-        f"{trad_vehicle[team_info['type']]} composée de "
+        f"{TRAD_VEHICLE[team_info['type']]} composée de "
         f"{members[0]['first_name']} {members[0]['last_name']} et "
         f"{members[1]['first_name']} {members[1]['last_name']}. Elle a "
         f"participé à {members[1]['participation_number']} "
