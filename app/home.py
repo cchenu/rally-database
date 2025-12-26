@@ -158,7 +158,12 @@ def create_section_request() -> None:
     if st.button("Exécuter la requête"):
         try:
             results = DATABASE.execute(query)
-            columns = [desc[0] for desc in DATABASE.cursor.description]
+            description = DATABASE.cursor.description
+            if description is None:
+                st.error("La requête ne retourne aucune colonne !")
+                return
+
+            columns = [desc[0] for desc in description]
             st.dataframe(
                 pd.DataFrame(data=results, columns=columns), hide_index=True
             )
