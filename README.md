@@ -50,14 +50,14 @@ Ce projet contient le développement d'une base de données relative aux rallyes
 ### Application Streamlit
 L'application Streamlit contient cinq types de pages différents. La page d'accueil sert de point d'entrée. Elle contient une barre de recherche permettant de trouver les rallyes, les étapes ou les équipes. Elle permet aussi l'accès à la page des exercices et de réaliser des requêtes SQL personnalisées. La page des exercices contient les réponses aux questions posées dans le sujet. Les pages rallye, étape et équipe permettent d'afficher les informations relatives à un rallye, une étape ou une équipe en particulier.
 
-<p align="center">
-  <img src="https://i.ibb.co/gFVvfT9h/page-home.png" width="250" height="250">
-  <img src="https://i.ibb.co/LXttSZSV/page-exercise.png" width="250" height="250">
-</p>
-<p align="center">
-  <img src="https://i.ibb.co/ks4bzvW9/page-rally.png" width="250" height="250">
-  <img src="https://i.ibb.co/F2fzYvs/page-team.png" width="250" height="250">
-</p>
+<div align="center">
+
+|  |  |
+|:--:|:--:|
+| <img src="https://i.postimg.cc/rwq1FHNC/page-home.png" height="250" width="250"> | <img src="https://i.postimg.cc/sg3YDL44/page-exercise.png" height="250" width="250"> |
+| <img src="https://i.postimg.cc/4xX6N0Q1/page-rally.png" height="250" width="250"> | <img src="https://i.postimg.cc/wj9XTrQJ/page-team.png" height="250" width="250"> |
+
+</div>
 
 ## Utilisation
 ### Installation
