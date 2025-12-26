@@ -50,12 +50,14 @@ def get_team_numbers(
     int
         Number of participating type in a rally for a category.
     """
-    return DATABASE.execute(
+    team_numbers: int = DATABASE.execute(
         "SELECT COUNT(*) "
         "FROM team JOIN participation ON team.id = id_team "
         "WHERE id_rally = %s AND team.type = %s;",
         [id_rally, vehicle],
     )[0][0]
+
+    return team_numbers
 
 
 def create_table_leaderboard(

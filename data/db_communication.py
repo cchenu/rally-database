@@ -1,7 +1,7 @@
 """Container for `PostgreSQL` class to interact with a PostgreSQL database."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 import psycopg
 
@@ -31,6 +31,36 @@ class SQLInterface(ABC):
         """
         raise NotImplementedError
 
+    @overload
+    def read(
+        self,
+        table: str,
+        columns: str | list[str] | None = ...,
+        condition_data: dict[str, Any] | None = ...,
+        number_values: int | None = ...,
+        return_type: Literal["list"] = ...,
+    ) -> list[Any] | list[tuple[Any, ...]]: ...
+
+    @overload
+    def read(
+        self,
+        table: str,
+        columns: str | list[str] | None = ...,
+        condition_data: dict[str, Any] | None = ...,
+        number_values: int | None = ...,
+        return_type: Literal["dict"] = ...,
+    ) -> dict[str, list[Any]]: ...
+
+    @overload
+    def read(
+        self,
+        table: str,
+        columns: str | list[str] | None = ...,
+        condition_data: dict[str, Any] | None = ...,
+        number_values: int | None = ...,
+        return_type: Literal["list[dict]"] = "list[dict]",
+    ) -> list[dict[str, Any]]: ...
+
     @abstractmethod
     def read(
         self,
@@ -39,7 +69,7 @@ class SQLInterface(ABC):
         condition_data: dict[str, Any] | None = None,
         number_values: int | None = None,
         return_type: Literal["list", "dict", "list[dict]"] = "list[dict]",
-    ) -> list[dict[str, Any]] | dict[str, list[Any]] | list[tuple[Any] | Any]:
+    ) -> Any:
         """
         Read data from the database.
 
@@ -242,7 +272,7 @@ class PostgreSQL(SQLInterface):
         condition_data: dict[str, Any] | None = None,
         number_values: int | None = None,
         return_type: Literal["list", "dict", "list[dict]"] = "list[dict]",
-    ) -> list[dict[str, Any]] | dict[str, list[Any]] | list[tuple[Any] | Any]:
+    ) -> Any:  # noqa: ANN401
         if columns is None:
             columns_str = "*"
         elif isinstance(columns, list):
