@@ -1,8 +1,11 @@
 """Home page of the streamlit app."""
 
-from typing import Any, Literal, TypedDict
+from typing import Literal, TypedDict
 
+import pandas as pd
 import streamlit as st
+from psycopg.errors import Error as SQLException
+from psycopg.errors import InsufficientPrivilege
 from streamlit_searchbox import st_searchbox
 
 from app.utils import APP_SRC, DATABASE, TRAD_VEHICLE
@@ -17,6 +20,14 @@ class SearchDict(TypedDict):
 
 
 def create_elements() -> list[SearchDict]:
+    """
+    Create a list with search options.
+
+    Returns
+    -------
+    list[SearchDict]
+        List with search options: rallys, stages and teams.
+    """
     elements: list[SearchDict] = []
 
     rallys = DATABASE.read("rally", ["id", "name", "year"])
@@ -67,16 +78,40 @@ def create_elements() -> list[SearchDict]:
     return elements
 
 
-def search_fn(searchterm: str, elements: list[SearchDict]) -> list[str]:
+def search_fn(search_term: str, elements: list[SearchDict]) -> list[str]:
+    """
+    Search function. For a search tearm, find corresponding labels.
 
+    Parameters
+    ----------
+    search_term : str
+        User search term.
+    elements : list[SearchDict]
+        List with search options: rallys, stages and teams.
+
+    Returns
+    -------
+    list[str]
+        List of labels matching the search term.
+    """
     return [
         x["label"]
         for x in elements
-        if searchterm.lower() in x["label"].lower()
+        if search_term.lower() in x["label"].lower()
     ]
 
 
 def change_page(select_label: str, elements: list[SearchDict]) -> None:
+    """
+    Change page after a search.
+
+    Parameters
+    ----------
+    select_label : str
+        Label selected by the user.
+    elements : list[SearchDict]
+        List with search options: rallys, stages and teams.
+    """
     element = next(
         element for element in elements if element["label"] == select_label
     )
@@ -97,17 +132,41 @@ def change_page(select_label: str, elements: list[SearchDict]) -> None:
         st.switch_page(APP_SRC / "team.py")
 
 
+def create_section_request() -> None:
+    """Create a section for SQL requests."""
+    st.subheader("Requêtes libres")
+
+    query = st.text_area(
+        "Entrez votre requête SQL", value="SELECT * FROM rally;", height=150
+    )
+
+    if st.button("Exécuter la requête"):
+        try:
+            results = DATABASE.execute(query)
+            columns = [desc[0] for desc in DATABASE.cursor.description]
+            st.dataframe(
+                pd.DataFrame(data=results, columns=columns), hide_index=True
+            )
+        except InsufficientPrivilege:
+            st.error("Vous n'avez pas les droits suffisants !")
+        except SQLException as exc:
+            st.error(f"Erreur SQL : {exc}")
+
+
 def create_page() -> None:
+    """Create the home page."""
     st.title("Home Page")
 
     elements = create_elements()
 
-    selected = st_searchbox(
+    st_searchbox(
         search_fn,
         placeholder="Rechercher un rally, une étape ou une équipe",
         elements=elements,
         submit_function=lambda s: change_page(s, elements),
     )
+
+    create_section_request()
 
 
 if __name__ == "__main__":

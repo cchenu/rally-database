@@ -1,27 +1,73 @@
 """Module with utilitaries."""
 
+import os
 from pathlib import Path
 from typing import Literal
 
 import streamlit as st
+from dotenv import load_dotenv
 
 from data.db_communication import PostgreSQL
 
-DATABASE = PostgreSQL(
-    hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
-    db_name="neondb",
-    username="guest",
-    password="project-rally",
-    port=5432,
-)
 
-APP_SRC = Path(__file__).parent
+def getenv_str(name: str) -> str:
+    """
+    Get environment variable which is a string.
 
-TRAD_VEHICLE: dict[str, str] = {
-    "car": "voiture",
-    "motorbike": "moto",
-    "truck": "camion",
-}
+    Parameters
+    ----------
+    name : str
+        Name of the environment variable.
+
+    Returns
+    -------
+    str
+        Value of the environment variable.
+
+    Raises
+    ------
+    RuntimeError
+        Missing environment variable.
+    """
+    value = os.getenv(name)
+    if value is None:
+        exception_text = f"Missing environment variable: {name}"
+        raise RuntimeError(exception_text)
+    return value
+
+
+def getenv_int(name: str) -> int:
+    """
+    Get environment variable which must be an integer.
+
+    Parameters
+    ----------
+    name : str
+        Name of the environment variable.
+
+    Returns
+    -------
+    int
+        Value of the environment variable as an integer.
+
+    Raises
+    ------
+    RuntimeError
+        Missing environment variable.
+    RuntimeError
+        Environment variable is not an integer.
+    """
+    value = os.getenv(name)
+    if value is None:
+        exception_text = f"Missing environment variable: {name}"
+        raise RuntimeError(exception_text)
+    try:
+        return int(value)
+    except ValueError as exc:
+        exception_text = (
+            f"Environment variable {name} must be an integer, got {value!r}"
+        )
+        raise RuntimeError(exception_text) from exc
 
 
 def get_leaderboard(
@@ -85,3 +131,21 @@ def convert_s_to_h(seconds: float) -> str:
         String with hour. For example: 1 h 06 min.
     """
     return f"{int(seconds // 3600)} h {int(seconds % 3600 // 60):02} min"
+
+
+load_dotenv(override=True)
+DATABASE = PostgreSQL(
+    hostname=getenv_str("HOSTNAME"),
+    db_name=getenv_str("DB_NAME"),
+    username=getenv_str("USERNAME"),
+    password=getenv_str("PASSWORD"),
+    port=getenv_int("PORT"),
+)
+
+APP_SRC = Path(__file__).parent
+
+TRAD_VEHICLE: dict[str, str] = {
+    "car": "voiture",
+    "motorbike": "moto",
+    "truck": "camion",
+}
