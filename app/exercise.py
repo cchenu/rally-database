@@ -274,7 +274,7 @@ def question_7() -> None:
 
 def create_page() -> None:
     """Create the exercise page with all questions."""
-    st.title("Requêtes")
+    st.title("Exercices")
     st.divider()
     question_1()
     question_2()

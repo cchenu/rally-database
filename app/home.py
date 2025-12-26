@@ -132,6 +132,21 @@ def change_page(select_label: str, elements: list[SearchDict]) -> None:
         st.switch_page(APP_SRC / "team.py")
 
 
+def create_section_exercises() -> None:
+    """Create a section for exercices."""
+    st.subheader("Exercices")
+
+    st.write("Pour accéder aux exercices données par le sujet, cliquez ici :")
+    button = st.button(
+        "Accès à la page Exercices",
+        key="exercises_button",
+        use_container_width=True,
+    )
+
+    if button:
+        st.switch_page(APP_SRC / "exercise.py")
+
+
 def create_section_request() -> None:
     """Create a section for SQL requests."""
     st.subheader("Requêtes libres")
@@ -155,7 +170,7 @@ def create_section_request() -> None:
 
 def create_page() -> None:
     """Create the home page."""
-    st.title("Home Page")
+    st.title("Page d'accueil")
 
     elements = create_elements()
 
@@ -165,6 +180,8 @@ def create_page() -> None:
         elements=elements,
         submit_function=lambda s: change_page(s, elements),
     )
+
+    create_section_exercises()
 
     create_section_request()
 
