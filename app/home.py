@@ -136,7 +136,7 @@ def create_section_exercises() -> None:
     """Create a section for exercices."""
     st.subheader("Exercices")
 
-    st.write("Pour accéder aux exercices données par le sujet, cliquez ici :")
+    st.write("Pour accéder aux exercices donnés par le sujet, cliquez ici :")
     button = st.button(
         "Accès à la page Exercices",
         key="exercises_button",
