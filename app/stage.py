@@ -28,9 +28,28 @@ def exposant_etape(number: int, rally_name: int, rally_year: int):
         return (f"{number}ᵉ étape du {rally_name} {rally_year}", determinant)
 
 
-def get_result_stage(id_stage: int):
+def get_crew_by_vehicule(vehicule: str):
+    list_number_crew = DATABASE.execute(
+        "SELECT c.id FROM crew AS c JOIN team AS t ON c.id_team = t.id WHERE t.type = %s",
+        [vehicule],
+    )
+    return list_number_crew
+
+
+def get_result_stage(id_stage: int, vehicule: str):
+
+    list_number_crew = get_crew_by_vehicule(vehicule)
+    crew_ids = [row[0] for row in list_number_crew]
+
+    traductions = {"car": "voiture", "truck": "camion"}
+
+    vehicule_fr = traductions.get(vehicule, "moto")
+    st.subheader(f"Classement {vehicule_fr}")
+
     result = DATABASE.read("result", condition_data={"id_stage": id_stage})
     df_result = pd.DataFrame(result)
+    if not df_result.empty:
+        df_result = df_result[df_result["id_crew"].isin(crew_ids)]
 
     df_stage_result = pd.DataFrame(columns=["Classement", "Équipe", "Temps"])
 
@@ -50,10 +69,22 @@ def get_result_stage(id_stage: int):
         for i, val in enumerate(stage_result["time"])
     ]
     df_stage_result = df_stage_result[["Classement", "Équipe", "Temps"]]
-    
-    st_table = static_dataframe(
-        df_stage_result, clickable_column="Équipe"
+
+    st_table = static_dataframe(df_stage_result, clickable_column="Équipe")
+
+
+def get_table_team_number_name_member():
+    table_team_number_name_member = DATABASE.execute(
+        "SELECT c.id, c.id_team, co.last_name, co.first_name, t.name "
+        "FROM crew AS c "
+        "JOIN contestant AS co ON co.id_crew = c.id "
+        "JOIN team AS t ON t.id = c.id_team"
     )
+    df_table_team_number_name_member = pd.DataFrame(
+        table_team_number_name_member,
+        columns=["id crew", "id team", "last name", "first name", "team name"],
+    )
+    return df_table_team_number_name_member
 
 
 def create_page():
@@ -88,8 +119,13 @@ def create_page():
         f"{exposant_etape(number, rally_name, rally_year)[1]} {exposant_etape(number, rally_name, rally_year)[0]} se déroule de {city_depart} à {city_arrivee} sur une distance de {distance_stage} km."
     )
 
-    get_result_stage(id_stage)
+    get_table_team_number_name_member()
+
+    get_result_stage(id_stage, "car")
+    get_result_stage(id_stage, "truck")
+    get_result_stage(id_stage, "motorbike")
 
 
 if __name__ == "__main__":
     create_page()
+    
