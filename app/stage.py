@@ -37,54 +37,94 @@ def get_crew_by_vehicule(vehicule: str):
 
 
 def get_result_stage(id_stage: int, vehicule: str):
-
     list_number_crew = get_crew_by_vehicule(vehicule)
     crew_ids = [row[0] for row in list_number_crew]
 
     traductions = {"car": "voiture", "truck": "camion"}
-
     vehicule_fr = traductions.get(vehicule, "moto")
-    st.subheader(f"Classement {vehicule_fr}")
 
     result = DATABASE.read("result", condition_data={"id_stage": id_stage})
     df_result = pd.DataFrame(result)
-    if not df_result.empty:
-        df_result = df_result[df_result["id_crew"].isin(crew_ids)]
 
-    df_stage_result = pd.DataFrame(columns=["Classement", "Équipe", "Temps"])
+    df_result = df_result[df_result["id_crew"].isin(crew_ids)]
 
     stage_result = df_result[["time", "id_crew"]].sort_values(
         by=["time"], ascending=True, key=lambda x: x.replace(0, np.inf)
     )
 
-    df_stage_result["Temps"] = [
+    df_teams_info = get_table_team_number_name_member()
+
+    df_merged = stage_result.merge(df_teams_info, on="id_crew", how="left")
+
+    df_display = pd.DataFrame()
+    df_display["Classement"] = [
+        str(i + 1) if val != 0 else "N/A"
+        for i, val in enumerate(df_merged["time"])
+    ]
+
+    df_display["Équipe"] = df_merged["team_name"].astype(str)
+
+    df_display["Temps"] = [
         convert_s_to_h(line) if line else "Disqualifié"
-        for line in stage_result["time"]
+        for line in df_merged["time"]
     ]
 
-    df_stage_result["Équipe"] = stage_result["id_crew"].values
+    df_display["Pilote 1"] = df_merged["Pilote 1"]
+    df_display["Pilote 2"] = df_merged["Pilote 2"]
 
-    df_stage_result["Classement"] = [
-        str(i + 1) if val != "Disqualifié" else "N/A"
-        for i, val in enumerate(stage_result["time"])
-    ]
-    df_stage_result = df_stage_result[["Classement", "Équipe", "Temps"]]
-
-    st_table = static_dataframe(df_stage_result, clickable_column="Équipe")
+    st.subheader(f"Classement {vehicule_fr}")
+    static_dataframe(df_display, clickable_column="Équipe")
 
 
 def get_table_team_number_name_member():
     table_team_number_name_member = DATABASE.execute(
-        "SELECT c.id, c.id_team, co.last_name, co.first_name, t.name "
+        "SELECT c.id, t.name, co.first_name, co.last_name "
         "FROM crew AS c "
         "JOIN contestant AS co ON co.id_crew = c.id "
         "JOIN team AS t ON t.id = c.id_team"
     )
-    df_table_team_number_name_member = pd.DataFrame(
+    df = pd.DataFrame(
         table_team_number_name_member,
-        columns=["id crew", "id team", "last name", "first name", "team name"],
+        columns=["id_crew", "team_name", "first_name", "last_name"],
     )
-    return df_table_team_number_name_member
+
+    df["full_name"] = df["first_name"] + " " + df["last_name"]
+    df["member_idx"] = df.groupby("id_crew").cumcount() + 1
+
+    df_pivot = df.pivot(
+        index=["id_crew", "team_name"],
+        columns="member_idx",
+        values="full_name",
+    ).reset_index()
+
+    df_pivot.columns = ["id_crew", "team_name", "Pilote 1", "Pilote 2"]
+
+    return df_pivot.fillna("")
+
+
+def create_button(id_stage):
+    col1, col2, col3, col4, col5 = st.columns(5)
+    stage = DATABASE.read("stage", condition_data={"id": id_stage})
+    df_stage = pd.DataFrame(stage)
+
+    current_number = df_stage["number"].iloc[0]
+    id_rally = df_stage["id_rally"].iloc[0]
+
+    all_stages = DATABASE.read("stage", condition_data={"id_rally": id_rally})
+    df_all_stages = pd.DataFrame(all_stages)
+    max_number = df_all_stages["number"].max()
+
+    if current_number > 0:
+        with col1:
+            if st.button("Étape précédente"):
+                st.session_state["id_stage"] -= 1
+                st.rerun()
+
+    if current_number < max_number:
+        with col5:
+            if st.button("Étape suivante"):
+                st.session_state["id_stage"] += 1
+                st.rerun()
 
 
 def create_page():
@@ -119,13 +159,12 @@ def create_page():
         f"{exposant_etape(number, rally_name, rally_year)[1]} {exposant_etape(number, rally_name, rally_year)[0]} se déroule de {city_depart} à {city_arrivee} sur une distance de {distance_stage} km."
     )
 
-    get_table_team_number_name_member()
-
     get_result_stage(id_stage, "car")
     get_result_stage(id_stage, "truck")
     get_result_stage(id_stage, "motorbike")
 
+    create_button(id_stage)
+
 
 if __name__ == "__main__":
     create_page()
-    
