@@ -260,6 +260,17 @@ class PostgreSQL(SQLInterface):
             if query.lower().startswith("select"):
                 return list(self.cursor.fetchall())
             self.conn.commit()
+        except psycopg.errors.IdleInTransactionSessionTimeout:
+            self.conn = psycopg.connect(
+                host=self.hostname,
+                dbname=self.db_name,
+                user=self.username,
+                password=self.password,
+                port=self.port,
+            )
+
+            self.cursor = self.conn.cursor()
+            return self.execute(query, params)
         except:
             self.conn.rollback()
             raise
