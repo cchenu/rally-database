@@ -6,15 +6,7 @@ import numpy as np
 from dataframe_with_button import static_dataframe
 
 from data.db_communication import PostgreSQL
-from app.utils import convert_s_to_h
-
-DATABASE = PostgreSQL(
-    hostname="ep-curly-dew-ad41zuv8-pooler.c-2.us-east-1.aws.neon.tech",
-    db_name="neondb",
-    username="guest",
-    password="project-rally",
-    port=5432,
-)
+from app.utils import convert_s_to_h, APP_SRC, DATABASE
 
 
 def exposant_etape(number: int, rally_name: int, rally_year: int):
@@ -63,6 +55,7 @@ def get_result_stage(id_stage: int, vehicule: str):
     ]
 
     df_display["Équipe"] = df_merged["team_name"].astype(str)
+    df_display["id_team"] = df_merged["id_team"]
 
     df_display["Temps"] = [
         convert_s_to_h(line) if line else "Disqualifié"
@@ -73,70 +66,64 @@ def get_result_stage(id_stage: int, vehicule: str):
     df_display["Pilote 2"] = df_merged["Pilote 2"]
 
     st.subheader(f"Classement {vehicule_fr}")
-    static_dataframe(df_display, clickable_column="Équipe")
+
+    st_table = static_dataframe(
+        df_display[["Classement", "Équipe", "Temps", "Pilote 1", "Pilote 2"]],
+        clickable_column="Équipe",
+    )
+
+    if st_table:
+        st.session_state["id_team"] = df_display[
+            df_display["Équipe"] == st_table
+        ]["id_team"].iloc[0]
+        st.switch_page(APP_SRC / "team.py")
 
 
 def get_table_team_number_name_member():
     table_team_number_name_member = DATABASE.execute(
-        "SELECT c.id, t.name, co.first_name, co.last_name "
+        "SELECT c.id, t.id, t.name, co.first_name, co.last_name "
         "FROM crew AS c "
         "JOIN contestant AS co ON co.id_crew = c.id "
         "JOIN team AS t ON t.id = c.id_team"
     )
     df = pd.DataFrame(
         table_team_number_name_member,
-        columns=["id_crew", "team_name", "first_name", "last_name"],
+        columns=["id_crew", "id_team", "team_name", "first_name", "last_name"],
     )
 
     df["full_name"] = df["first_name"] + " " + df["last_name"]
     df["member_idx"] = df.groupby("id_crew").cumcount() + 1
 
     df_pivot = df.pivot(
-        index=["id_crew", "team_name"],
+        index=["id_crew", "id_team", "team_name"],
         columns="member_idx",
         values="full_name",
     ).reset_index()
 
-    df_pivot.columns = ["id_crew", "team_name", "Pilote 1", "Pilote 2"]
+    df_pivot.columns = [
+        "id_crew",
+        "id_team",
+        "team_name",
+        "Pilote 1",
+        "Pilote 2",
+    ]
 
     return df_pivot.fillna("")
 
 
-def create_button(id_stage):
-    col1, col2, col3, col4, col5 = st.columns(5)
-    stage = DATABASE.read("stage", condition_data={"id": id_stage})
-    df_stage = pd.DataFrame(stage)
-
-    current_number = df_stage["number"].iloc[0]
-    id_rally = df_stage["id_rally"].iloc[0]
-
-    all_stages = DATABASE.read("stage", condition_data={"id_rally": id_rally})
-    df_all_stages = pd.DataFrame(all_stages)
-    max_number = df_all_stages["number"].max()
-
-    if current_number > 0:
-        with col1:
-            if st.button("Étape précédente"):
-                st.session_state["id_stage"] -= 1
-                st.rerun()
-
-    if current_number < max_number:
-        with col5:
-            if st.button("Étape suivante"):
-                st.session_state["id_stage"] += 1
-                st.rerun()
-
-
 def create_page():
     # id_contestant: int = st.session_state["id_contestant"]
-    id_rally: int = st.session_state["id_rally"]
+    # id_rally: int = st.session_state["id_rally"]
     id_stage: int = st.session_state["id_stage"]
 
     stage = DATABASE.read("stage", condition_data={"id": id_stage})
     df_stage = pd.DataFrame(stage)
+    id_rally = df_stage["id_rally"].item()
+
     id_starting_city = df_stage["id_starting_city"][0]
     id_ending_city = df_stage["id_ending_city"][0]
     distance_stage = df_stage["kilometers"][0]
+
     rally = DATABASE.read("rally", condition_data={"id": id_rally})
     df_rally = pd.DataFrame(rally)
     city_depart = DATABASE.read(
@@ -162,8 +149,6 @@ def create_page():
     get_result_stage(id_stage, "car")
     get_result_stage(id_stage, "truck")
     get_result_stage(id_stage, "motorbike")
-
-    create_button(id_stage)
 
 
 if __name__ == "__main__":
