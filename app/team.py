@@ -1,12 +1,12 @@
 """Streamlit page to have information about a given team."""
 
-from typing import Any, Literal, TypedDict
+from typing import Any, TypedDict
 
 import pandas as pd
 import streamlit as st
 from dataframe_with_button import static_dataframe
 
-from app.utils import APP_SRC, DATABASE, TRAD_VEHICLE, get_leaderboard
+from app.utils import APP_SRC, DATABASE, TRAD_VEHICLE, Vehicle, get_leaderboard
 
 
 class TeamInfo(TypedDict):
@@ -14,7 +14,7 @@ class TeamInfo(TypedDict):
 
     name: str
     budget: float
-    type: Literal["car", "motorbike", "truck"]
+    type: Vehicle
     id_crew: int
     constructor: str
     engine_size: float
@@ -38,9 +38,7 @@ def create_section_member(member: dict[str, Any]) -> None:
     )
 
 
-def get_rank(
-    id_rally: int, id_team: int, vehicle: Literal["car", "motorbike", "truck"]
-) -> str:
+def get_rank(id_rally: int, id_team: int, vehicle: Vehicle) -> str:
     """
     Get the rank of a team for a rally.
 
@@ -50,7 +48,7 @@ def get_rank(
         ID of the rally.
     id_team : int
         ID of the team.
-    vehicle : Literal["car", "motorbike", "truck"]
+    vehicle : Vehicle
         Type of vehicle.
 
     Returns
@@ -68,9 +66,7 @@ def get_rank(
     return "Disqualifiée"
 
 
-def create_section_races(
-    id_team: int, vehicle: Literal["car", "motorbike", "truck"]
-) -> None:
+def create_section_races(id_team: int, vehicle: Vehicle) -> None:
     """
     Create a section about all races of a team.
 
@@ -78,7 +74,7 @@ def create_section_races(
     ----------
     id_team : int
         ID of the team.
-    vehicle : Literal["car", "motorbike", "truck"]
+    vehicle : Vehicle
         Type of vehicle.
     """
     st.subheader("Courses")
@@ -148,19 +144,17 @@ def create_page() -> None:
     """Create the Streamlit page about a team."""
     id_team: int = st.session_state["id_team"]
 
-    team_tuple: tuple[
-        str, float, Literal["car", "motorbike", "truck"], int, str, float, str
-    ] = DATABASE.execute(
-        "SELECT team.name, team.budget, team.type, crew.id, "
-        "vehicle.constructor, vehicle.engine_size, vehicle.serie_number "
-        "FROM team "
-        "JOIN crew ON crew.id_team = team.id "
-        "JOIN vehicle ON vehicle.id_crew = crew.id "
-        "WHERE team.id = %s;",
-        [id_team],
-    )[
-        0
-    ]
+    team_tuple: tuple[str, float, Vehicle, int, str, float, str] = (
+        DATABASE.execute(
+            "SELECT team.name, team.budget, team.type, crew.id, "
+            "vehicle.constructor, vehicle.engine_size, vehicle.serie_number "
+            "FROM team "
+            "JOIN crew ON crew.id_team = team.id "
+            "JOIN vehicle ON vehicle.id_crew = crew.id "
+            "WHERE team.id = %s;",
+            [id_team],
+        )[0]
+    )
     team_info: TeamInfo = {
         "name": team_tuple[0],
         "budget": team_tuple[1],

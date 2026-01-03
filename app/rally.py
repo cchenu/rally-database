@@ -1,12 +1,18 @@
 """Streamlit page to have information about a given rally."""
 
-from typing import Any, Literal
+from typing import Any
 
 import pandas as pd
 import streamlit as st
 from dataframe_with_button import static_dataframe
 
-from app.utils import APP_SRC, DATABASE, convert_s_to_h, get_leaderboard
+from app.utils import (
+    APP_SRC,
+    DATABASE,
+    Vehicle,
+    convert_s_to_h,
+    get_leaderboard,
+)
 
 
 def get_city(id_city: int) -> tuple[str, str]:
@@ -32,9 +38,7 @@ def get_city(id_city: int) -> tuple[str, str]:
     return city, country
 
 
-def get_team_numbers(
-    id_rally: int, vehicle: Literal["car", "truck", "motorbike"]
-) -> int:
+def get_team_numbers(id_rally: int, vehicle: Vehicle) -> int:
     """
     Find number of participating teams in a rally for a type of vehicle.
 
@@ -42,7 +46,7 @@ def get_team_numbers(
     ----------
     id_rally : int
         ID of the rally in the database.
-    vehicle : Literal["car", "truck", "motorbike"]
+    vehicle : Vehicle
         Type of vehicle.
 
     Returns

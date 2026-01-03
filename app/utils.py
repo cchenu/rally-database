@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 from data.db_communication import PostgreSQL
 
+Vehicle = Literal["car", "truck", "motorbike"]
+
 
 def getenv_str(name: str) -> str:
     """
@@ -71,7 +73,7 @@ def getenv_int(name: str) -> int:
 
 
 def get_leaderboard(
-    id_rally: int, vehicle: Literal["car", "truck", "motorbike"]
+    id_rally: int, vehicle: Vehicle
 ) -> list[tuple[str, float, str, str, str, str, int, bool]]:
     """
     Get the leaderboard of a rally for a given category.
@@ -80,7 +82,7 @@ def get_leaderboard(
     ----------
     id_rally : int
         ID of the rally in the database.
-    vehicle : Literal["car", "truck", "motorbike"]
+    vehicle : Vehicle
         Type of vehicle.
 
     Returns

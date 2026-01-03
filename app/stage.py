@@ -1,39 +1,83 @@
 """Streamlit page to have information about a given stage."""
 
-import streamlit as st
-import pandas as pd
+from typing import Literal
+
 import numpy as np
+import pandas as pd
+import streamlit as st
 from dataframe_with_button import static_dataframe
 
-from data.db_communication import PostgreSQL
-from app.utils import convert_s_to_h, APP_SRC, DATABASE
+from app.utils import APP_SRC, DATABASE, Vehicle, convert_s_to_h
 
 
-def exposant_etape(number: int, rally_name: int, rally_year: int):
-    determinant = "La"
+def stage_name(
+    number: int, rally_name: int, rally_year: int
+) -> tuple[str, Literal["Le", "La"]]:
+    """
+    Write the stage name with the determiner.
+
+    Parameters
+    ----------
+    number : int
+        Number of the stage. For prologue, number is 0.
+    rally_name : int
+        Name of the rally.
+    rally_year : int
+        Year of the rally.
+
+    Returns
+    -------
+    str
+        Stage name in French.
+    Literal["Le", "La"]
+        Determiner according to the stage.
+    """
+    determiner: Literal["Le", "La"] = "La"
     if number == 0:
-        determinant = "Le"
-        return (f"Prologue de {rally_name} {rally_year}", determinant)
-    elif number == 1:
-        return (f"{number}ʳᵉ étape du {rally_name} {rally_year}", determinant)
-    else:
-        return (f"{number}ᵉ étape du {rally_name} {rally_year}", determinant)
+        determiner = "Le"
+        return (f"Prologue de {rally_name} {rally_year}", determiner)
+    if number == 1:
+        return (f"{number}ʳᵉ étape du {rally_name} {rally_year}", determiner)
+    return (f"{number}ᵉ étape du {rally_name} {rally_year}", determiner)
 
 
-def get_crew_by_vehicule(vehicule: str):
-    list_number_crew = DATABASE.execute(
-        "SELECT c.id FROM crew AS c JOIN team AS t ON c.id_team = t.id WHERE t.type = %s",
-        [vehicule],
+def get_crew_by_vehicle(vehicle: Vehicle) -> list[tuple[int]]:
+    """
+    Get all crew IDs for one type of vehicle.
+
+    Parameters
+    ----------
+    vehicle : Vehicle
+        Type of vehicle.
+
+    Returns
+    -------
+    list[tuple[int]]
+        Crew IDs of one category.
+    """
+    return DATABASE.execute(
+        "SELECT c.id FROM crew AS c JOIN team AS t ON c.id_team = t.id "
+        "WHERE t.type = %s",
+        [vehicle],
     )
-    return list_number_crew
 
 
-def get_result_stage(id_stage: int, vehicule: str):
-    list_number_crew = get_crew_by_vehicule(vehicule)
+def get_result_stage(id_stage: int, vehicle: Vehicle) -> None:
+    """
+    Create the result table for a vehicle category and the given stage.
+
+    Parameters
+    ----------
+    id_stage : int
+        ID of the stage in the database.
+    vehicle : Vehicle
+        Type of vehicle.
+    """
+    list_number_crew = get_crew_by_vehicle(vehicle)
     crew_ids = [row[0] for row in list_number_crew]
 
     traductions = {"car": "voiture", "truck": "camion"}
-    vehicule_fr = traductions.get(vehicule, "moto")
+    vehicle_fr = traductions.get(vehicle, "moto")
 
     result = DATABASE.read("result", condition_data={"id_stage": id_stage})
     df_result = pd.DataFrame(result)
@@ -65,7 +109,7 @@ def get_result_stage(id_stage: int, vehicule: str):
     df_display["Pilote 1"] = df_merged["Pilote 1"]
     df_display["Pilote 2"] = df_merged["Pilote 2"]
 
-    st.subheader(f"Classement {vehicule_fr}")
+    st.subheader(f"Classement {vehicle_fr}")
 
     st_table = static_dataframe(
         df_display[["Classement", "Équipe", "Temps", "Pilote 1", "Pilote 2"]],
@@ -79,7 +123,16 @@ def get_result_stage(id_stage: int, vehicule: str):
         st.switch_page(APP_SRC / "team.py")
 
 
-def get_table_team_number_name_member():
+def get_table_team_number_name_member() -> pd.DataFrame:
+    """
+    Get table with crew ID, team ID, team name and driver names.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns `id_crew`, `id_team`, `team_name`, `Pilote 1`
+        and `Pilote 2`.
+    """
     table_team_number_name_member = DATABASE.execute(
         "SELECT c.id, t.id, t.name, co.first_name, co.last_name "
         "FROM crew AS c "
@@ -94,10 +147,11 @@ def get_table_team_number_name_member():
     df["full_name"] = df["first_name"] + " " + df["last_name"]
     df["member_idx"] = df.groupby("id_crew").cumcount() + 1
 
-    df_pivot = df.pivot(
+    df_pivot = df.pivot_table(
         index=["id_crew", "id_team", "team_name"],
         columns="member_idx",
         values="full_name",
+        aggfunc="first",
     ).reset_index()
 
     df_pivot.columns = [
@@ -111,9 +165,8 @@ def get_table_team_number_name_member():
     return df_pivot.fillna("")
 
 
-def create_page():
-    # id_contestant: int = st.session_state["id_contestant"]
-    # id_rally: int = st.session_state["id_rally"]
+def create_page() -> None:
+    """Create a page about a stage."""
     id_stage: int = st.session_state["id_stage"]
 
     stage = DATABASE.read("stage", condition_data={"id": id_stage})
@@ -140,10 +193,13 @@ def create_page():
     number = df_stage["number"][0]
     city_depart = df_city_depart["name"][0]
     city_arrivee = df_city_arrivee["name"][0]
-    st.title(exposant_etape(number, rally_name, rally_year)[0])
+    st.title(stage_name(number, rally_name, rally_year)[0])
 
     st.text(
-        f"{exposant_etape(number, rally_name, rally_year)[1]} {exposant_etape(number, rally_name, rally_year)[0]} se déroule de {city_depart} à {city_arrivee} sur une distance de {distance_stage} km."
+        f"{stage_name(number, rally_name, rally_year)[1]} "
+        f"{stage_name(number, rally_name, rally_year)[0]} "
+        f"se déroule de {city_depart} à {city_arrivee} sur une distance de "
+        f"{distance_stage} km."
     )
 
     get_result_stage(id_stage, "car")
