@@ -63,6 +63,11 @@ L'application Streamlit contient cinq types de pages différents. La page d'accu
 ### Installation
 **Vérifiez que vous avez Python 3.x installé.**
 
+**Clonez le dépôt :**
+   ```bash
+   git clone https://github.com/cchenu/rally-database
+   ```
+
 **Placez-vous dans le répertoire du projet :**
    ```bash
    cd rally-database
