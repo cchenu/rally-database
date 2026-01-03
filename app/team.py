@@ -79,27 +79,26 @@ def create_section_races(id_team: int, vehicle: Vehicle) -> None:
     """
     st.subheader("Courses")
 
-    rallys: list[tuple[int, str, int]] = DATABASE.execute(
-        "SELECT rally.id, rally.name, rally.year FROM rally "
-        "JOIN participation ON participation.id_rally = rally.id "
-        "WHERE participation.id_team = %s "
-        "ORDER BY year ASC;",
-        [id_team],
+    rallys = DATABASE.read(
+        "race_by_team",
+        ["id", "name", "year"],
+        {"id_team": id_team},
+        return_type="dict",
     )
 
-    df_rallys = pd.DataFrame(rallys, columns=["id", "name", "year"])
-    df_rallys["Rally"] = (
+    df_rallys = pd.DataFrame(rallys)
+    df_rallys["Rallye"] = (
         df_rallys["name"] + " " + df_rallys["year"].astype(str)
     )
     df_rallys["Classement"] = df_rallys["id"].apply(
         lambda id_rally: get_rank(id_rally, id_team, vehicle)
     )
 
-    st_table = static_dataframe(df_rallys[["Rally", "Classement"]], "Rally")
+    st_table = static_dataframe(df_rallys[["Rallye", "Classement"]], "Rallye")
 
     if st_table:
         st.session_state["id_rally"] = df_rallys[
-            df_rallys["Rally"] == st_table
+            df_rallys["Rallye"] == st_table
         ]["id"].iloc[0]
         st.switch_page(APP_SRC / "rally.py")
 
@@ -144,26 +143,20 @@ def create_page() -> None:
     """Create the Streamlit page about a team."""
     id_team: int = st.session_state["id_team"]
 
-    team_tuple: tuple[str, float, Vehicle, int, str, float, str] = (
-        DATABASE.execute(
-            "SELECT team.name, team.budget, team.type, crew.id, "
-            "vehicle.constructor, vehicle.engine_size, vehicle.serie_number "
-            "FROM team "
-            "JOIN crew ON crew.id_team = team.id "
-            "JOIN vehicle ON vehicle.id_crew = crew.id "
-            "WHERE team.id = %s;",
-            [id_team],
-        )[0]
-    )
-    team_info: TeamInfo = {
-        "name": team_tuple[0],
-        "budget": team_tuple[1],
-        "type": team_tuple[2],
-        "id_crew": team_tuple[3],
-        "constructor": team_tuple[4],
-        "engine_size": team_tuple[5],
-        "serie_number": team_tuple[6],
-    }
+    team_info: TeamInfo = DATABASE.read(
+        "team_info",
+        [
+            "name",
+            "budget",
+            "type",
+            "id_crew",
+            "constructor",
+            "engine_size",
+            "serie_number",
+        ],
+        {"id_team": id_team},
+        return_type="list[dict]",
+    )[0]
 
     members = DATABASE.read(
         "contestant",

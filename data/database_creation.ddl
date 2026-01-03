@@ -12,7 +12,7 @@
 -- Database Section
 -- ________________ 
 
--- create database rally;
+create database rally;
 
 
 -- Tables Section
@@ -110,7 +110,7 @@ create table vehicle (
      constraint FKconduit_ID unique (id_crew));
 
 
--- Constraints Section
+-- Standard Constraints Section
 -- ___________________ 
 
 alter table contestant add constraint FKcompose_FK
@@ -229,3 +229,68 @@ create index FKfournit_IND
 create index FKfinance_IND
      on team_sponsor (id_team);
 
+
+-- Domain constraints Section
+-- _____________ 
+
+ALTER TABLE team
+ADD CONSTRAINT vehicle_type_check
+CHECK (type IN ('car', 'truck', 'motorbike'));
+
+ALTER TABLE stage
+ADD CONSTRAINT stage_type_check
+CHECK (type IN ('linking', 'special'));
+
+ALTER TABLE city
+ADD CONSTRAINT city_lat_long_check
+CHECK (
+    lat BETWEEN -90 AND 90
+    AND long BETWEEN -180 AND 180
+);
+
+ALTER TABLE stage
+ADD CONSTRAINT stage_number_check
+CHECK (number >= 0);
+
+ALTER TABLE stage
+ADD CONSTRAINT stage_kilometers_check
+CHECK (kilometers >= 0);
+
+ALTER TABLE stage
+ADD CONSTRAINT stage_max_time_check
+CHECK (max_time >= 0);
+
+ALTER TABLE result
+ADD CONSTRAINT result_time_check
+CHECK (time >= 0);
+
+ALTER TABLE rally
+ADD CONSTRAINT rally_year_check
+CHECK (year >= 0);
+
+ALTER TABLE team
+ADD CONSTRAINT team_budget_check
+CHECK (budget >= 0);
+
+ALTER TABLE vehicle
+ADD CONSTRAINT vehicle_engine_size_check
+CHECK (engine_size >= 0);
+
+ALTER TABLE contestant
+ADD CONSTRAINT contestant_participation_number_check
+CHECK (participation_number >= 0);
+
+-- Vue Section
+-- _____________
+
+CREATE VIEW race_by_team AS
+SELECT rally.id, rally.name, rally.year, participation.id_team FROM rally
+JOIN participation ON participation.id_rally = rally.id
+ORDER BY year ASC;
+
+CREATE VIEW team_info AS
+SELECT team.name, team.budget, team.type, crew.id as id_crew,
+vehicle.constructor, vehicle.engine_size, vehicle.serie_number, team.id as id_team
+FROM team
+JOIN crew ON crew.id_team = team.id
+JOIN vehicle ON vehicle.id_crew = crew.id;

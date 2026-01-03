@@ -37,7 +37,7 @@ Ce projet contient le développement d'une base de données relative aux rallyes
   - `dump.sql` : Fichier dump SQL de la base de données, pour information, non nécessaire au fonctionnement de l'application.
   - `fill_db.py` : Script pour remplir la base de données majoritairement avec des données générées aléatoirement.
   - `stages.csv` : Fichier CSV contenant les étapes des rallyes, avec l'année, le numéro, la ville d'arrivée et celle de départ. Ces données sont réelles.
-  - `table_creation.ddl` : Fichier DDL contenant les commandes SQL pour créer les tables de la base de données, issu de DB-Main.
+  - `database_creation.ddl` : Fichier DDL contenant les commandes SQL pour créer les tables de la base de données, issu de DB-Main.
 - `.env` : Fichier contenant les variables d'environnement pour la connexion à la base de données.
 - `.gitignore` : Fichier listant les fichiers et dossiers à ignorer par Git.
 - `Makefile` : Fichier Makefile pour automatiser certaines tâches. Non nécessaire, nécessite l'installation de Make.
