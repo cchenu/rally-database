@@ -188,6 +188,7 @@ class SQLInterface(ABC):
         """
         raise NotImplementedError
 
+    @abstractmethod
     def delete_all(self, table: str) -> None:
         """
         Delete all rows of a given table.
