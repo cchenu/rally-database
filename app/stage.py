@@ -165,6 +165,44 @@ def get_table_team_number_name_member() -> pd.DataFrame:
     return df_pivot.fillna("")
 
 
+def create_button(stage_number: int, id_rally: int) -> None:
+    """
+    Create buttons to navigate to the previous and next stages.
+
+    Parameters
+    ----------
+    stage_number : int
+        Number of the stage
+    id_rally : int
+        ID of the rally in the database.
+    """
+    col1, _, _, _, col5 = st.columns(5)
+    if stage_number != 0:
+        previous_stage: list[int] = DATABASE.read(
+            "stage",
+            "id",
+            condition_data={"number": stage_number - 1, "id_rally": id_rally},
+            return_type="list",
+        )
+        if previous_stage:
+            with col1:
+                if st.button("Étape précédente"):
+                    st.session_state["id_stage"] = previous_stage[0]
+                    st.rerun()
+
+    next_stage: list[int] = DATABASE.read(
+        "stage",
+        "id",
+        condition_data={"number": stage_number + 1, "id_rally": id_rally},
+        return_type="list",
+    )
+    if next_stage:
+        with col5:
+            if st.button("Étape suivante"):
+                st.session_state["id_stage"] = next_stage[0]
+                st.rerun()
+
+
 def create_page() -> None:
     """Create a page about a stage."""
     id_stage: int = st.session_state["id_stage"]
@@ -205,6 +243,8 @@ def create_page() -> None:
     get_result_stage(id_stage, "car")
     get_result_stage(id_stage, "truck")
     get_result_stage(id_stage, "motorbike")
+
+    create_button(df_stage["number"].item(), id_rally)
 
 
 if __name__ == "__main__":
