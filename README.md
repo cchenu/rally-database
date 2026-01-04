@@ -109,7 +109,7 @@ Lors de la première utilisation, il est possible que Streamlit vous demande une
 Une fenêtre de navigateur devrait s'ouvrir automatiquement à l'adresse [http://localhost:8501](http://localhost:8501). Si ce n'est pas le cas, ouvrez votre navigateur et rendez-vous à cette adresse.
 
 ## État du projet
-Le projet est : _en_développement_ - version 0.0.1.
+Le projet est : _terminé_ - version 0.0.1.
 
 
 ## Contact
